@@ -9,7 +9,6 @@ const   { body,validationResult } = require('express-validator/check'),
 module.exports = {
     list: (req, res, next) => {
         User.find()
-            .sort([['family_name', 'ascending']])
             .exec((err, list_users)=> {
                 if(err) { return next(err)}
                 res.render('user_list', {title: 'Users', user_list: list_users})
@@ -23,7 +22,7 @@ module.exports = {
                     .exec(cb)
             },
             book: function(cb){
-                Book.find({'user': id})
+                Book.find({})
                     .exec(cb)
             },
         }, function(err, result) {

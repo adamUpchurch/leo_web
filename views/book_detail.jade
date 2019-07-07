@@ -14,13 +14,16 @@ block content
     p #{book.summary}
     
     h4 Story:
-
     hr
-    
-    !{book.story.en}
-
+    h6 English
+    p !{book.story.en}
     hr
-    p
-        a(href=book.url+'/delete') Delete
+    h6 Spanish
+    p !{book.story.es}
+    hr
     p
         a(href=book.url+'/update') Update
+    p
+        a(href=book.url+'/translate') Translate
+    p
+        a(href=book.url+'/delete') Delete

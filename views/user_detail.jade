@@ -14,12 +14,12 @@ block content
     h5 Summary - Progress - Interests
     h5 Books Reading:
     //- To be list of books currently reading
-    //- ul
-    //-     each startup in startups
-    //-         li
-    //-             a(href=startup.url) #{startup.title}
-    //-     else
-    //-         p not reading any books, yet!
+    ul
+        each book in books
+            li
+                a(href=book.url) #{book.title}
+        else
+            p not reading any books, yet!
 
     hr
     p

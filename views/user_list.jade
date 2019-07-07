@@ -4,9 +4,9 @@ block content
     h1= title
 
     ul
-        each founder in founder_list
+        each user in user_list
             li
-                a(href=founder.url) #{founder.name}
-                |   - #{founder.description}
+                a(href=`catalog/user/${user.id}`) #{user.name}
+                |   - some stats and stuff
         else
-            li There are no founders.
+            li There are no users.

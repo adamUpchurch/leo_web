@@ -9,21 +9,6 @@ var Book = require('../models/book'),
 const { body,validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
 
-marked.setOptions({
-    renderer: new marked.Renderer(),
-    highlight: function(code) {
-      return require('highlight.js').highlightAuto(code).value;
-    },
-    pedantic: true,
-    headerIds: false,
-    tables: true,
-    sanitize: true,
-    smartLists: true,
-    smartypants: false,
-    xhtml: false
-  });
-
-
 module.exports = {
     index: (req, res) => {
         async.parallel({
@@ -38,8 +23,6 @@ module.exports = {
     },
     list: (req, res, next) => {
         Book.find({})
-            .sort([['last', 'ascending']])
-            .populate('title subtitle summary difficulty')
             .exec((err, list_books) => {
                 if (err) { return next(err); }
                 res.render('book_list', { title: 'Book List', book_list: list_books})
@@ -99,11 +82,10 @@ module.exports = {
                 // if no error with splitting, add to book object
                 // save story
 
-                console.log('==========================================')
                 book.story.en = resp.data
                 book.save(err => {
                     if(err) {res.render('book_form',  { title: 'Create Book', book: book, errors: errors.array()})}
-                    res.redirect(book.url)
+                    res.redirect('/catalog/books')
                 })
             }).catch(error => {
                 // error with splitting - currently not return error to user
@@ -116,6 +98,52 @@ module.exports = {
             });
         }
     ],
+    translate_get: (req, res, next) => {
+        let id = req.params.id;
+        Book.findById(id)
+            .exec((err, book)=> {
+                if (err) { return next(err); }
+                console.log('Book Translate')
+                console.log(book)
+                if(book.post){
+                    var book = marked(book.post)
+                    console.log('Book Translate Post =====')
+                    console.log(post)
+                }
+
+                res.render('book_Translate', { title: 'Book Translate', book})
+            })    },
+    translate_post: (req, res, next) => {
+        let id = req.params.id;
+        Book.findById(id)
+            .exec((err, book)=> {
+                
+                if (err) { return next(err); }
+                var textToTranslate = book.story.en
+                axios.post('http://127.0.0.1:5000/translate',{
+                    'text_to_translate': textToTranslate,
+                    })
+                    .then(resp => {
+                    // if no error with splitting, add to book object
+                    // save story
+        
+                    book.story.es = resp.data
+                    book.save(err => {
+                        if(err) {res.render('book_translate',  { title: 'Translate Book', book: book, errors: errors.array()})}
+                        res.redirect(book.url)
+                    })
+                }).catch(error => {
+                    // error with splitting - currently not return error to user
+                    console.log('=================== Error=======================')
+                    console.log(error.response.status)
+                    console.log(error.response.statusText)
+                    console.log('=================== Error=======================')
+        
+                    res.render('book_translate',  { title: 'Translate Book', book: book})
+                });
+            })
+
+    },
     delete_get: (req, res) => {
         async.parallel({
             book: callback => {
