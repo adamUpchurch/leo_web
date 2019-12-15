@@ -22,7 +22,7 @@ UserSchema
 UserSchema
     .virtual('url')
     .get(function(){
-        return '/catalog/user/' +this._id
+        return '/user/' +this._id
     })
 
 // Virtual for author's URL

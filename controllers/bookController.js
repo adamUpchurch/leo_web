@@ -13,7 +13,7 @@ module.exports = {
     index: (req, res) => {
         async.parallel({
             book_count: function(cb) {
-                Genre.countDocuments({}, cb)
+                console.log('nothing')
             },
         }, function(err, results) {
             res.render('book', { title: 'book', error: err, data: results });
@@ -22,9 +22,11 @@ module.exports = {
         )
     },
     list: (req, res, next) => {
+        console.log("Rendering books!")
         Book.find({})
             .exec((err, list_books) => {
                 if (err) { return next(err); }
+                console.log('DOING IT!')
                 res.render('book_list', { title: 'Book List', book_list: list_books})
             });
     },
@@ -54,9 +56,6 @@ module.exports = {
 
         //Sanitize
         sanitizeBody('title').escape(),
-        sanitizeBody('author').escape(),
-        sanitizeBody('summary').escape(),
-        sanitizeBody('story').escape(),
 
 
         (req, res, next) => {
@@ -68,24 +67,25 @@ module.exports = {
 
             var book = new Book({
                 title: req_book.title,
-                author: req_book.author,
-                summary: req_book.summary,
-                difficulty: req_book.difficulty,
+                author: req_book.author
             });
 
-            var textToSplit = req_book.story
+            var story = req_book.story
 
-            axios.post('http://127.0.0.1:5000/split',{
-                'text_to_split': textToSplit,
+            axios.post('http://127.0.0.1:5000/traducir',{
+                'book': book,
+                'story': story
                 })
                 .then(resp => {
                 // if no error with splitting, add to book object
                 // save story
 
-                book.story.en = resp.data
+                book.story.en = resp.data.en
+                book.story.es = resp.data.es
+
                 book.save(err => {
                     if(err) {res.render('book_form',  { title: 'Create Book', book: book, errors: errors.array()})}
-                    res.redirect('/catalog/books')
+                    res.redirect('/books')
                 })
             }).catch(error => {
                 // error with splitting - currently not return error to user
@@ -98,6 +98,57 @@ module.exports = {
             });
         }
     ],
+    // create_post: [
+    //     // Validate fields
+    //     body('title', 'Title must not be empty').isLength({min: 1}).trim(),
+    //     body('story', 'Book not be empty').isLength({min: 1}).trim(),
+
+    //     //Sanitize
+    //     sanitizeBody('title').escape(),
+    //     sanitizeBody('author').escape(),
+    //     sanitizeBody('summary').escape(),
+    //     sanitizeBody('story').escape(),
+
+
+    //     (req, res, next) => {
+    //         const errors = validationResult(req);
+    //         // Create a Book Project
+    //         // Create a Book object with escaped/trimmed data and old id
+    //         var req_book = req.body
+    //         console.log(req_book)
+
+    //         var book = new Book({
+    //             title: req_book.title,
+    //             author: req_book.author,
+    //             summary: req_book.summary,
+    //             difficulty: req_book.difficulty,
+    //         });
+
+    //         var textToSplit = req_book.story
+
+    //         axios.post('http://127.0.0.1:5000/split',{
+    //             'text_to_split': textToSplit,
+    //             })
+    //             .then(resp => {
+    //             // if no error with splitting, add to book object
+    //             // save story
+
+    //             book.story.en = resp.data
+    //             book.save(err => {
+    //                 if(err) {res.render('book_form',  { title: 'Create Book', book: book, errors: errors.array()})}
+    //                 res.redirect('/books')
+    //             })
+    //         }).catch(error => {
+    //             // error with splitting - currently not return error to user
+    //             console.log('=================== Error=======================')
+    //             console.log(error.response.status)
+    //             console.log(error.response.statusText)
+    //             console.log('=================== Error=======================')
+
+    //             res.render('book_form',  { title: 'Create Book', book: book})
+    //         });
+    //     }
+    // ],
     translate_get: (req, res, next) => {
         let id = req.params.id;
         Book.findById(id)
@@ -152,7 +203,7 @@ module.exports = {
         }, (error, results) => {
             if(error) return next(error);
             console.log(results)
-            if(results.book == null) res.redirect('/catalog/books')
+            if(results.book == null) res.redirect('/books')
             res.render('book_delete', {title: 'Delete Book', book: results.book})
         })
     },
@@ -165,7 +216,7 @@ module.exports = {
             if(error) return next(error)
             Book.findByIdAndRemove(req.body.bookid, function deleteBook(error) {
                 if(error) return next(error)
-                res.redirect('/catalog/books')
+                res.redirect('/books')
             })
         })
     },

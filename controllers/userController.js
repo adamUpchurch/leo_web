@@ -84,7 +84,7 @@ module.exports = {
         }, function(error, results) {
             if(error) {return next(error)}
             if (results.user == null) {
-                res.redirect('/catalog/users')
+                res.redirect('/users')
             }
             res.render('user_delete', {title: 'Delete User', user: results.user, books: results.books})
         })
@@ -102,7 +102,7 @@ module.exports = {
                     if(error) {                        
                         return next(error)
                     }
-                    res.redirect('/catalog/users')
+                    res.redirect('/users')
                 })
             }
         })
@@ -118,7 +118,7 @@ module.exports = {
         }, function(error, results) {
             if(error) {return next(error)}
             if (results.user == null) {
-                res.redirect('/catalog/users')
+                res.redirect('/users')
             }
             res.render('user_form', {title: 'Update User', user: results.user, books: results.books})
         })

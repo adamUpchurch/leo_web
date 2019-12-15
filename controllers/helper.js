@@ -1,10 +1,5 @@
-var async = require('async');
-var marked = require('marked');
-
 const axios = require('axios')
-
-var Book = require('../models/book'),
-    User = require('../models/user');
+var Book = require('../models/book');
 
 
 var bookRequests = function(url, data, obj) => {

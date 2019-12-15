@@ -11,6 +11,7 @@ var BookSchema = new Schema({
         es: [{type: String}]
     },
     difficulty: {type: Number, min: 1, max: 5},
+    cover: {type: String},
     farthest_read: {type: Number},
     recently_read: {type: Number},
     last_read: {type: Date}
@@ -20,7 +21,7 @@ var BookSchema = new Schema({
 BookSchema
     .virtual('url')
     .get(function() {
-        return '/catalog/book/' + this._id
+        return '/book/' + this._id
     })
 
 module.exports = mongoose.model('Book', BookSchema)
