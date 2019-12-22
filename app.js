@@ -8,8 +8,6 @@ const passport      = require('passport');
 
 
 var indexRouter     = require('./routes/index');
-var catalogRouter   = require('./routes/catalog');
-var authRouter      = require('./routes/auth');
 
 var {MongoDB, session}       = require('./config/keys');
 var passportSetup   = require('./config/passport');

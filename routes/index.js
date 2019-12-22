@@ -3,7 +3,8 @@ var express   = require('express'),
     passport  = require('passport');
 
 var user     = require('../controllers/userController'),
-    book     = require('../controllers/bookController');
+    book     = require('../controllers/bookController'),
+    bug      = require('../controllers/bugController');
  
     
 // Verify that user is MEEEEE!!!
@@ -21,7 +22,7 @@ router.get('/', (req, res) => {
     console.log(req.user)
     if(req.user._id == req.params.id || req.user._id == '5d1e1208f7465cc875da09b9'){
       console.log("User Logged in!")
-      res.redirect('/app')
+      res.redirect('/books')
     } else {
         res.redirect('auth/google')
     }
@@ -64,6 +65,20 @@ router.post('/book/:id/translate', book.translate_post)
 router.get('/book/:id', book.detail)
 router.get('/books', book.list)
 
+// Bug Routes
+
+router.get('/bug/create', bug.create_get)
+router.post('/bug/create', bug.create_post)
+
+router.post('/bug/:id/delete', bug.delete_post)
+
+router.get('/bug/:id/update', bug.update_get)
+router.post('/bug/:id/update', bug.update_post)
+router.post('/bug/:id/complete', bug.complete_post)
+
+router.get('/bug/:id', bug.detail)
+router.get('/bugs', bug.list)
+
     //User Routes
 router.get('/user/create', user.create_get)
 router.post('/user/create', user.create_post)
@@ -76,7 +91,5 @@ router.post('/user/:id/update', authCheck, user.update_post)
 
 router.get('/user/:id', authCheck, user.detail)
 router.get('/users', authCheck, user.list)
-
-module.exports = router;
 
 module.exports = router;

@@ -1,0 +1,31 @@
+extends layout
+
+block scripts
+    script(src="https://cdn.jsdelivr.net/npm/marked/marked.min.js")
+
+block content
+
+    h1 #{bug.bookTitle}
+    h3 #{bug.authorName}
+
+    div(style='margin-left: 20px; margin-top:20px')
+
+    h4 Index:
+    p #{bug.sentenceIndex}
+    
+    h4 Sentence:
+    hr
+    h6 English
+    p !{bug.text}
+    hr
+    h6 Spanish
+    p !{bug.translation}
+    hr
+    p
+        form(method='POST' action= bug._id + '/complete')
+            input(type='number' hidden=true name='_id')
+            button.btn.btn-primary(type='submit') Complete
+    p
+        a(href=bug.url+'/update') Update
+    p
+        a(href=bug.url+'/delete') Delete
