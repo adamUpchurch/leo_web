@@ -10,14 +10,15 @@ const passport      = require('passport');
 var indexRouter     = require('./routes/index');
 
 var {MongoDB, session}       = require('./config/keys');
-var passportSetup   = require('./config/passport');
+// var passportSetup   = require('./config/passport');
 
 
 var app = express();
 
 //Set up mongoose connection
 var mongoose = require('mongoose')
-var mongoDB = MongoDB.dbURI
+var mongoDB = process.env.MongoDB_dbURI ? process.env.MongoDB_dbURI : MongoDB.dbURI
+
 mongoose.connect(mongoDB, {useNewURLParser: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error: '));
@@ -35,7 +36,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // set up session cookies
 app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000,
-  keys: [session.cookieKey]
+  keys: [process.env.session_cookieKey ? process.env.session_cookieKey : session.cookieKey]
 }));
 
 
