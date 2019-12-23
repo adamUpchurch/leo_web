@@ -1,6 +1,9 @@
 {
-  "name": "startup-athon",
-  "version": "0.0.0",
+  "name": "read-leo",
+  "version": "0.0.1",
+  "description": "Web app to manage books for Read Leo",
+  "author": "Adam Upchurch",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
@@ -28,5 +31,8 @@
   },
   "devDependencies": {
     "nodemon": "^1.19.0"
+  },
+  "engines": {
+    "node": "12.x"
   }
 }
