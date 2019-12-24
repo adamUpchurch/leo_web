@@ -138,16 +138,10 @@ module.exports = {
     ],
     // Delete bug!!
     delete_post: (req, res) => {
-        async.parallel({
-            bug: callback => {
-                Bug.findById(req.bug._id).exec(callback)
-            }
-        }, (error, results) => {
+        console.log(`Deleting book._id : ${req.params.id}`)
+        Bug.findByIdAndRemove(req.params.id, function deleteBook(error) {
             if(error) return next(error)
-            Bug.findByIdAndRemove(req.bug._id, function deleteBook(error) {
-                if(error) return next(error)
-                res.redirect('/bugs')
-            })
+            res.redirect('/bugs')
         })
     },
     // Get Update Form

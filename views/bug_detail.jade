@@ -26,6 +26,6 @@ block content
             input(type='number' hidden=true name='_id')
             button.btn.btn-primary(type='submit') Complete
     p
-        a(href=bug.url+'/update') Update
-    p
-        a(href=bug.url+'/delete') Delete
+        form(method='POST' action= bug._id + '/delete')
+            input(type='number' hidden=true name='_id')
+            button.btn.btn-primary(type='submit') delete

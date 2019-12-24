@@ -32,21 +32,27 @@ module.exports = {
             });
     },
     detail: (req, res) => {
-        let id = req.params.id;
-        Book.findById(id)
-            .populate('bugs')
-            .exec((err, book)=> {
-                if (err) { return next(err); }
-                console.log('Book detail')
-                console.log(book)
-                if(book.post){
-                    var book = marked(book.post)
-                    console.log('Book Post =====')
-                    console.log(post)
-                }
-
-                res.render('book_detail', { title: 'Book Detail', book, bugs: book.bugs ? book.bugs : []})
-            })
+        async.parallel({
+            book: function(callback) {
+                Book.findById(req.params.id)
+                    .populate('bugs')
+                  .exec(callback)
+            },
+            bugs: function(callback) {
+                Bug.find()
+                .exec(callback)
+            },
+        }, function(err, results) {
+            console.log(results.bugs)
+            if (err) { return next(err); } // Error in API usage.
+            if (results.book==null) { // No results.
+                var err = new Error('Book not found');
+                err.status = 404;
+                return next(err);
+            }
+            // Successful, so render.
+            res.render('book_detail', { title: 'Book Detail', book: results.book, bugs: results.bugs})
+        });
     },
     create_get: (req, res, next) => {
         res.render('book_form', {title: 'Book Form'})

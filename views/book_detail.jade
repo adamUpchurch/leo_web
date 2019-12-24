@@ -17,10 +17,12 @@ block content
     
     p Cover: #{book.cover}
 
+
+    h5 Bugs
     ul
-        each bug in book.bugs
+        each bug in bugs
             li
-                a(href=`/bug/${bug._id}`) #{bug.bookTitle} #{bug.sentenceIndex} #{bug.completed ? "Complete" : "Incomplete"}
+                a(href=`/bug/${bug._id}`) #{bug.sentenceIndex} #{bug.completed ? "Complete" : "Incomplete"}
         else
             ul There are no bugs only butterflies! 🦋
     
