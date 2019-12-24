@@ -1,13 +1,12 @@
 extends layout
 
 block content
-    h1= title
+    h1 🐛 #{title}
 
     ul
         each bug in bug_list
             li
-                a(href=`/bug/${bug._id}`) #{bug.bookTitle} 
-                | - #{bug.sentenceIndex}
-                | - #{bug.completed ? "Complete" : "Incomplete"}
+                a(href=`/bug/${bug._id}`) #{bug.bookTitle} #{bug.sentenceIndex} #{bug.completed ? "Complete" : "Incomplete"}
         else
-            li There are no bugs.
+            h5 There are no bugs only butterflies! 
+            h1 🦋

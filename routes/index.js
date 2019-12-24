@@ -70,6 +70,8 @@ router.get('/books', book.list)
 router.get('/bug/create', bug.create_get)
 router.post('/bug/create', bug.create_post)
 
+router.post('/bug/tag', bug.tag_post)
+
 router.post('/bug/:id/delete', bug.delete_post)
 
 router.get('/bug/:id/update', bug.update_get)

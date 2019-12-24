@@ -14,7 +14,8 @@ var BookSchema = new Schema({
     cover: {type: String},
     farthest_read: {type: Number},
     recently_read: {type: Number},
-    last_read: {type: Date}
+    last_read: {type: Date},
+    bugs: [{ type: Schema.Types.ObjectId, ref: 'Bug', default: []}]
 })
 
 // Virtual 

@@ -9,10 +9,9 @@ const passport      = require('passport');
 
 var indexRouter     = require('./routes/index');
 
-// if (location.hostname === 'localhost') {
-//   var {MongoDB, session}       = require('./config/keys');
-//   // var passportSetup   = require('./config/passport');
-// }
+
+var {MongoDB, session}       = require('./config/keys');
+// var passportSetup   = require('./config/passport');
 
 
 var app = express();

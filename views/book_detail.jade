@@ -13,17 +13,18 @@ block content
     h4 Summary:
     p #{book.summary}
     
-    h4 Story:
-    hr
-    h6 English
-    p !{book.story.en}
-    hr
-    h6 Spanish
-    p !{book.story.es}
-    hr
+    p ID: #{book._id}
+    
+    p Cover: #{book.cover}
+
+    ul
+        each bug in book.bugs
+            li
+                a(href=`/bug/${bug._id}`) #{bug.bookTitle} #{bug.sentenceIndex} #{bug.completed ? "Complete" : "Incomplete"}
+        else
+            ul There are no bugs only butterflies! 🦋
+    
     p
         a(href=book.url+'/update') Update
-    p
-        a(href=book.url+'/translate') Translate
     p
         a(href=book.url+'/delete') Delete

@@ -14,10 +14,12 @@ block content
             label(for='author') Author:
             input#title.form-control(type='text' placeholder='Author' rows="4" cols="50" name='author' required='true' value=(book===undefined ? '': book.author))
         .form-group
-            label(for='story') The Story:
-            hr
-            textarea(id='textarea' name='story')
-            hr
+            label(for='summary') Summary:
+            input#title.form-control(type='text' placeholder='Summary of Book' name='summary' value=(book===undefined ? '': book.summary))
+        .form-group
+            label(for='cover') Cover:
+            input#title.form-control(type='text' placeholder='Cover' rows="4" cols="50" name='cover' value=(book===undefined ? '': book.cover))
+            
         button.btn.btn-primary(type='submit') Submit
 
         if errors

@@ -4,6 +4,7 @@ var marked = require('marked');
 const axios = require('axios')
 
 var Book = require('../models/book'),
+    Bug = require('../models/bug'),
     User = require('../models/user');
 
 const { body,validationResult } = require('express-validator/check');
@@ -33,6 +34,7 @@ module.exports = {
     detail: (req, res) => {
         let id = req.params.id;
         Book.findById(id)
+            .populate('bugs')
             .exec((err, book)=> {
                 if (err) { return next(err); }
                 console.log('Book detail')
@@ -43,7 +45,7 @@ module.exports = {
                     console.log(post)
                 }
 
-                res.render('book_detail', { title: 'Book Detail', book})
+                res.render('book_detail', { title: 'Book Detail', book, bugs: book.bugs ? book.bugs : []})
             })
     },
     create_get: (req, res, next) => {
@@ -52,11 +54,12 @@ module.exports = {
     create_post: [
         // Validate fields
         body('title', 'Title must not be empty').isLength({min: 1}).trim(),
-        body('story', 'Book not be empty').isLength({min: 1}).trim(),
 
         //Sanitize
         sanitizeBody('title').escape(),
-
+        sanitizeBody('author').escape(),
+        sanitizeBody('summary').escape(),
+        sanitizeBody('cover').escape(),
 
         (req, res, next) => {
             const errors = validationResult(req);
@@ -67,88 +70,43 @@ module.exports = {
 
             var book = new Book({
                 title: req_book.title,
-                author: req_book.author
+                author: req_book.author,
+                summary: req_book.summary,
+                cover: req_book.cover
             });
 
             var story = req_book.story
+            book.save(err => {
+                if(err) {res.render('book_form',  { title: 'Create Book', book: book, errors: errors.array()})}
+                res.redirect('/books')
+            })
 
-            axios.post('http://127.0.0.1:5000/traducir',{
-                'book': book,
-                'story': story
-                })
-                .then(resp => {
-                // if no error with splitting, add to book object
-                // save story
+            // axios.post('http://127.0.0.1:5000/traducir',{
+            //     'book': book,
+            //     'story': story
+            //     })
+            //     .then(resp => {
+            //     // if no error with splitting, add to book object
+            //     // save story
 
-                book.story.en = resp.data.en
-                book.story.es = resp.data.es
+            //     book.story.en = resp.data.en
+            //     book.story.es = resp.data.es
 
-                book.save(err => {
-                    if(err) {res.render('book_form',  { title: 'Create Book', book: book, errors: errors.array()})}
-                    res.redirect('/books')
-                })
-            }).catch(error => {
-                // error with splitting - currently not return error to user
-                console.log('=================== Error=======================')
-                console.log(error.response.status)
-                console.log(error.response.statusText)
-                console.log('=================== Error=======================')
+            //     book.save(err => {
+            //         if(err) {res.render('book_form',  { title: 'Create Book', book: book, errors: errors.array()})}
+            //         res.redirect('/books')
+            //     })
+            // }).catch(error => {
+            //     // error with splitting - currently not return error to user
+            //     console.log('=================== Error=======================')
+            //     console.log(error.response.status)
+            //     console.log(error.response.statusText)
+            //     console.log('=================== Error=======================')
 
-                res.render('book_form',  { title: 'Create Book', book: book})
-            });
+            //     res.render('book_form',  { title: 'Create Book', book: book})
+            // });
         }
     ],
-    // create_post: [
-    //     // Validate fields
-    //     body('title', 'Title must not be empty').isLength({min: 1}).trim(),
-    //     body('story', 'Book not be empty').isLength({min: 1}).trim(),
-
-    //     //Sanitize
-    //     sanitizeBody('title').escape(),
-    //     sanitizeBody('author').escape(),
-    //     sanitizeBody('summary').escape(),
-    //     sanitizeBody('story').escape(),
-
-
-    //     (req, res, next) => {
-    //         const errors = validationResult(req);
-    //         // Create a Book Project
-    //         // Create a Book object with escaped/trimmed data and old id
-    //         var req_book = req.body
-    //         console.log(req_book)
-
-    //         var book = new Book({
-    //             title: req_book.title,
-    //             author: req_book.author,
-    //             summary: req_book.summary,
-    //             difficulty: req_book.difficulty,
-    //         });
-
-    //         var textToSplit = req_book.story
-
-    //         axios.post('http://127.0.0.1:5000/split',{
-    //             'text_to_split': textToSplit,
-    //             })
-    //             .then(resp => {
-    //             // if no error with splitting, add to book object
-    //             // save story
-
-    //             book.story.en = resp.data
-    //             book.save(err => {
-    //                 if(err) {res.render('book_form',  { title: 'Create Book', book: book, errors: errors.array()})}
-    //                 res.redirect('/books')
-    //             })
-    //         }).catch(error => {
-    //             // error with splitting - currently not return error to user
-    //             console.log('=================== Error=======================')
-    //             console.log(error.response.status)
-    //             console.log(error.response.statusText)
-    //             console.log('=================== Error=======================')
-
-    //             res.render('book_form',  { title: 'Create Book', book: book})
-    //         });
-    //     }
-    // ],
     translate_get: (req, res, next) => {
         let id = req.params.id;
         Book.findById(id)
@@ -261,14 +219,10 @@ module.exports = {
             console.log(req.body)
 
             var book = new Book({
-                title: req.body.title,
-                subtitle: req.body.subtitle,
-                summary: req.body.summary,
-                summary: req.body.story,
-                difficulty: req.body.difficulty,
-                story: {
-                    en: resp,
-                },
+                title: req_book.title,
+                author: req_book.author,
+                summary: req_book.summary,
+                cover: req_book.cover,
                 _id: req.params.id //This is required, or a new ID will be assigned.
             });
         if (!errors.isEmpty()) {
