@@ -13,6 +13,7 @@ var BugSchema = new Schema ({
     bookTitle: {type: String, max: 100},
     authorName: {type: String, max: 100},
 
+
 });
 
 // Virtual 

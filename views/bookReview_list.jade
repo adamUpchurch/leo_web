@@ -1,0 +1,12 @@
+extends layout
+
+block content
+    h1 🔖  #{title}
+
+    ul
+        each review in bookReview_list
+            li
+                a(href=`/bookreview/${review._id}`) #{review.bookTitle} #{review.sentenceIndex} #{review.isGoodReview ? "👍" : "👎"}
+        else
+            h5 There are no book reviews! 
+            h1 😭

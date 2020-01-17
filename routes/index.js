@@ -4,7 +4,9 @@ var express   = require('express'),
 
 var user     = require('../controllers/userController'),
     book     = require('../controllers/bookController'),
-    bug      = require('../controllers/bugController');
+    bug      = require('../controllers/bugController'),
+    review      = require('../controllers/reviewController'),
+    bookReview      = require('../controllers/bookReviewController');
  
     
 // Verify that user is MEEEEE!!!
@@ -59,6 +61,7 @@ router.post('/book/:id/delete', book.delete_post)
 router.get('/book/:id/update', book.update_get)
 router.post('/book/:id/update', book.update_post)
 
+
 router.get('/book/:id/translate', book.translate_get)
 router.post('/book/:id/translate', book.translate_post)
 
@@ -81,6 +84,22 @@ router.post('/bug/:id/complete', bug.complete_post)
 router.get('/bug/:id', bug.detail)
 router.get('/bugs', bug.list)
 
+// Review Routes
+
+router.get('/review/create', review.create_get)
+router.post('/review/create', review.create_post)
+
+router.post('/review/tag', review.tag_post)
+
+router.post('/review/:id/delete', review.delete_post)
+
+router.get('/review/:id/update', review.update_get)
+router.post('/review/:id/update', review.update_post)
+router.post('/review/:id/complete', review.complete_post)
+
+router.get('/review/:id', review.detail)
+router.get('/reviews', review.list)
+
     //User Routes
 router.get('/user/create', user.create_get)
 router.post('/user/create', user.create_post)
@@ -93,5 +112,19 @@ router.post('/user/:id/update', authCheck, user.update_post)
 
 router.get('/user/:id', authCheck, user.detail)
 router.get('/users', authCheck, user.list)
+
+// Book Review Routes
+
+router.get('/bookReview/create', bookReview.create_get)
+router.post('/bookReview/create', bookReview.create_post)
+
+router.post('/bookReview/:id/delete', bookReview.delete_post)
+
+router.get('/bookReview/:id/update', bookReview.update_get)
+router.post('/bookReview/:id/update', bookReview.update_post)
+router.post('/bookReview/:id/complete', bookReview.complete_post)
+
+router.get('/bookReview/:id', bookReview.detail)
+router.get('/bookReviews', bookReview.list)
 
 module.exports = router;
